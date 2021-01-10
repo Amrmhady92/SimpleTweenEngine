@@ -171,10 +171,14 @@ namespace SimpleTweenEngine
 
 
     }
+
+
+    #region Tween Job Types
     public class TweenJobTimer : TweenJob
     {
         public override void Work(float dt, LerpEngine engine)
         {
+            onUpdate?.Invoke();
             if (Step(dt))
             {
                 engine.RemoveJob(jobID);
@@ -182,7 +186,6 @@ namespace SimpleTweenEngine
             }
         }
     }
-
     public class TweenJobTransform: TweenJob
     {
         public TransformTweenType type;
@@ -199,6 +202,9 @@ namespace SimpleTweenEngine
         private Vector3 tempTarget = Vector3.zero;
         public override void Work(float dt, LerpEngine engine)
         {
+
+            onUpdate?.Invoke();
+
             tempTarget = target;
             if (curveX != null) tempTarget.x += (curveX.Evaluate(counter / time) * amplitudeX);
             if (curveY != null) tempTarget.y += (curveY.Evaluate(counter / time) * amplitudeY);
@@ -291,7 +297,6 @@ namespace SimpleTweenEngine
         }
 
     }
-
     public class TweenJobValueFloat : TweenJob
     {
         internal FloatField floatfield;
@@ -299,7 +304,7 @@ namespace SimpleTweenEngine
         public override void Work(float dt, LerpEngine engine)
         {
             floatfield.Value += (target * dt) / time;
-
+            onUpdate?.Invoke();
             if (Step(dt))
             {
                 engine.RemoveJob(jobID);
@@ -312,7 +317,8 @@ namespace SimpleTweenEngine
         public System.Action callback;
         public override void Work(float dt, LerpEngine engine)
         {
-            callback.Invoke();
+            callback?.Invoke();
+            onUpdate?.Invoke();
 
             if (Step(dt))
             {
@@ -322,5 +328,6 @@ namespace SimpleTweenEngine
             
         }
     }
+    #endregion
 }
 
