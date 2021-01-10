@@ -3,6 +3,14 @@ using System.Collections.Generic;
 using UnityEngine;
 using SimpleTweenEngine;
 
+public enum TweenAxis
+{
+    X,
+    Y,
+    Z,
+    All
+}
+
 public static class TweenEngine
 {
     static LerpEngine engine;
@@ -20,69 +28,17 @@ public static class TweenEngine
             return engine;
         }
     }
-    private static void SetStandardJobValues(float time, System.Action onStart, System.Action onComplete, System.Action onInterrupt, System.Action onChange, TweenJob job)
+    private static void SetStandardJobValues(float time, System.Action onStart, System.Action onComplete, System.Action onInterrupt, System.Action onUpdate, TweenJob job)
     {
         job.counter = 0;
         job.time = time;
         job.onComplete = onComplete;
         job.onInterrupt = onInterrupt;
-        job.onChange = onChange;
+        job.onUpdate = onUpdate;
         if (onStart != null) onStart.Invoke();
 
     }
-
-
-    public static TweenJobTimer Timer(float time, System.Action onStart = null, System.Action onComplete = null, System.Action onInterrupt = null, System.Action onChange = null)
-    {
-        if (time == 0) return null;
-        TweenJobTimer job = new TweenJobTimer();
-        SetStandardJobValues(time, onStart, onComplete, onInterrupt, onChange, job);
-        Engine.AddJob(job);
-        return job;
-    }
-
-    public static TweenJobValueFloat FloatValue(FloatField val, float to, float time, System.Action onStart = null, System.Action onComplete = null, System.Action onInterrupt = null, System.Action onChange = null)
-    {
-        if (time == 0 || val == null) return null;
-        TweenJobValueFloat job = new TweenJobValueFloat();
-        SetStandardJobValues(time, onStart, onComplete, onInterrupt, onChange, job);
-        job.floatfield = val;
-        job.target = to;
-        Engine.AddJob(job);
-        return job;
-    }
-
-    public static TweenJobCallBackOverTime CallBackOverTime(System.Action callback, float time, System.Action onStart = null, System.Action onComplete = null, System.Action onInterrupt = null, System.Action onChange = null)
-    {
-        if (time == 0 || callback == null) return null;
-
-        TweenJobCallBackOverTime job = new TweenJobCallBackOverTime();
-        SetStandardJobValues(time, onStart, onComplete, onInterrupt, onChange, job);
-        job.callback = callback;
-        Engine.AddJob(job);
-        return job;
-
-    }
-    public static TweenJobTransform Scale(GameObject scaledObject, Vector3 to, float time, System.Action onStart = null, System.Action onComplete = null, System.Action onInterrupt = null, System.Action onChange = null)
-    {
-        if (time == 0 || scaledObject == null) return null;
-        return TransformTweenValues(to, scaledObject, TransformTweenType.Scale, time, onStart, onComplete, onInterrupt, onChange);
-    }
-
-    public static TweenJobTransform Move(GameObject movedObject, Vector3 to, float time, System.Action onStart = null, System.Action onComplete = null, System.Action onInterrupt = null, System.Action onChange = null)
-    {
-        if (time == 0 || movedObject == null) return null;
-        return TransformTweenValues(to, movedObject, TransformTweenType.Move, time, onStart, onComplete, onInterrupt, onChange);
-
-    }
-
-    public static TweenJobTransform MoveLocal(GameObject movedObject, Vector3 to, float time, System.Action onStart = null, System.Action onComplete = null, System.Action onInterrupt = null, System.Action onChange = null)
-    {
-        if (time == 0 || movedObject == null) return null;
-        return TransformTweenValues(to, movedObject, TransformTweenType.LocalMove, time, onStart, onComplete, onInterrupt, onChange);
-    }
-
-    private static TweenJobTransform TransformTweenValues(Vector3 to, GameObject gameObject, TransformTweenType type, float time, System.Action onStart, System.Action onComplete, System.Action onInterrupt, System.Action onChange)
+    private static TweenJobTransform SetStandardTransformTweenValues(Vector3 to, GameObject gameObject, TransformTweenType type, float time, System.Action onStart, System.Action onComplete, System.Action onInterrupt, System.Action onUpdate)
     {
         TweenJobTransform job = new TweenJobTransform();
         job.type = type;
@@ -103,11 +59,68 @@ public static class TweenEngine
                 job.start = gameObject.transform.eulerAngles;
                 break;
         }
-        SetStandardJobValues(time, onStart, onComplete, onInterrupt, onChange, job);
+        SetStandardJobValues(time, onStart, onComplete, onInterrupt, onUpdate, job);
         Engine.AddJob(job);
         return job;
     }
 
+
+    public static TweenJobTimer Timer(float time, System.Action onStart = null, System.Action onComplete = null, System.Action onInterrupt = null, System.Action onUpdate = null)
+    {
+        if (time == 0) return null;
+        TweenJobTimer job = new TweenJobTimer();
+        SetStandardJobValues(time, onStart, onComplete, onInterrupt, onUpdate, job);
+        Engine.AddJob(job);
+        return job;
+    }
+
+    public static TweenJobValueFloat FloatValue(FloatField val, float to, float time, System.Action onStart = null, System.Action onComplete = null, System.Action onInterrupt = null, System.Action onUpdate = null)
+    {
+        if (time == 0 || val == null) return null;
+        TweenJobValueFloat job = new TweenJobValueFloat();
+        SetStandardJobValues(time, onStart, onComplete, onInterrupt, onUpdate, job);
+        job.floatfield = val;
+        job.target = to;
+        Engine.AddJob(job);
+        return job;
+    }
+
+    public static TweenJobCallBackOverTime CallBackOverTime(System.Action callback, float time, System.Action onStart = null, System.Action onComplete = null, System.Action onInterrupt = null, System.Action onUpdate = null)
+    {
+        if (time == 0 || callback == null) return null;
+
+        TweenJobCallBackOverTime job = new TweenJobCallBackOverTime();
+        SetStandardJobValues(time, onStart, onComplete, onInterrupt, onUpdate, job);
+        job.callback = callback;
+        Engine.AddJob(job);
+        return job;
+
+    }
+
+    public static TweenJobTransform Scale(GameObject scaledObject, Vector3 to, float time, System.Action onStart = null, System.Action onComplete = null, System.Action onInterrupt = null, System.Action onUpdate = null)
+    {
+        if (time == 0 || scaledObject == null) return null;
+        return SetStandardTransformTweenValues(to, scaledObject, TransformTweenType.Scale, time, onStart, onComplete, onInterrupt, onUpdate);
+    }
+
+    public static TweenJobTransform Move(GameObject movedObject, Vector3 to, float time, System.Action onStart = null, System.Action onComplete = null, System.Action onInterrupt = null, System.Action onUpdate = null)
+    {
+        if (time == 0 || movedObject == null) return null;
+        return SetStandardTransformTweenValues(to, movedObject, TransformTweenType.Move, time, onStart, onComplete, onInterrupt, onUpdate);
+
+    }
+
+    public static TweenJobTransform MoveLocal(GameObject movedObject, Vector3 to, float time, System.Action onStart = null, System.Action onComplete = null, System.Action onInterrupt = null, System.Action onUpdate = null)
+    {
+        if (time == 0 || movedObject == null) return null;
+        return SetStandardTransformTweenValues(to, movedObject, TransformTweenType.LocalMove, time, onStart, onComplete, onInterrupt, onUpdate);
+    }
+
+
+    public static void EndJob(TweenJob job)
+    {
+        EndJob(job.jobID);
+    }
     public static void EndJob(int id)
     {
         Engine.RemoveJob(Engine.GetJob(id));
@@ -124,13 +137,7 @@ namespace SimpleTweenEngine
         Rotate
     }
 
-    public enum TweenAxis
-    {
-        X,
-        Y,
-        Z,
-        All
-    }
+
 
    
 
@@ -142,7 +149,7 @@ namespace SimpleTweenEngine
         private bool finished = false;
         public System.Action onComplete;
         public System.Action onInterrupt;
-        public System.Action onChange;
+        public System.Action onUpdate;
 
         public bool Finished
         {
@@ -156,7 +163,7 @@ namespace SimpleTweenEngine
         protected bool Step(float dt)
         {
             counter += dt;
-            onChange?.Invoke();
+            onUpdate?.Invoke();
             finished = (counter >= time);
             return finished;
         }
@@ -235,6 +242,15 @@ namespace SimpleTweenEngine
             }
         }
 
+        /// <summary>
+        /// Set an Animation Curve to be added to the Target Vector. 
+        /// ie Target Vector3 010 and CurveY ending with 3 and Amplitude 1 will result in final target position of 040. 
+        /// Play with the curves
+        /// </summary>
+        /// <param name="curve">Unity Animation Curve can be set in Editor</param>
+        /// <param name="axis">Select which Axis to apply the curve to, TweenAxis.All applies the same curve to all Axes</param>
+        /// <param name="amplitude">Can be more than 1 if you want to multiply the values of the curve</param>
+        /// <returns></returns>
         public TweenJobTransform SetCurve(AnimationCurve curve, TweenAxis axis, float amplitude = 1)
         {
             switch (axis)
@@ -266,6 +282,11 @@ namespace SimpleTweenEngine
         public TweenJobTransform SetOnComplete(System.Action callback)
         {
             onComplete = callback;
+            return this;
+        }
+        public TweenJobTransform SetOnUpdate(System.Action callback)
+        {
+            onUpdate = callback;
             return this;
         }
 
