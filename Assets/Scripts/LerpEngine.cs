@@ -24,7 +24,6 @@ namespace SimpleTweenEngine
 
 
         }
-
         public List<TweenJob> TempJobsQueue
         {
             get
@@ -34,7 +33,6 @@ namespace SimpleTweenEngine
             }
 
         }
-
         public int ActiveJobsCount
         {
             get
@@ -42,7 +40,6 @@ namespace SimpleTweenEngine
                 return JobsQueue.Count + TempJobsQueue.Count;
             }
         }
-
         private void Update()
         {
             //Taking the jobs one by one as long as we have any jobs
@@ -65,7 +62,6 @@ namespace SimpleTweenEngine
 
             
         }
-
         public void AddJob(TweenJob job)
         {
             if (job == null) return;
@@ -95,7 +91,6 @@ namespace SimpleTweenEngine
                 TempJobsQueue.Remove(job);
             }
         }
-
         public TweenJob GetJob(int id)
         {
             TweenJob job = JobsQueue.Find(x => x.jobID == id); // look for the job in the active queue
@@ -106,8 +101,6 @@ namespace SimpleTweenEngine
             job = TempJobsQueue.Find(x => x.jobID == id); // look in the temp as well
             return job;
         }
-
-
         public bool EndJob(int id)
         {
             TweenJob job = GetJob(id);
