@@ -14,29 +14,34 @@ public class Test : MonoBehaviour
     public AnimationCurve scaleCurve;
     void Start()
     {
+        Invoke("TEST", 2);
 
+    }
+
+    private void TEST()
+    {
         TweenEngine.Move(
-            moveTestObject,
-            moveTestObject.transform.position + (new Vector3(1, -1, 0)),
-            time)
-            .SetOnComplete(() =>
-            {
-                TweenEngine.MoveY(
                     moveTestObject,
-                    0,
+                    moveTestObject.transform.position + (new Vector3(1, -1, 0)),
                     time)
-                .SetOnComplete(() =>
-                {
-                    TweenEngine.MoveX(
-                        moveTestObject,
-                        0,
-                        time)
                     .SetOnComplete(() =>
                     {
-                        Debug.Log("On Complete Completed");
+                        TweenEngine.MoveY(
+                            moveTestObject,
+                            0,
+                            time)
+                        .SetOnComplete(() =>
+                        {
+                            TweenEngine.MoveX(
+                                moveTestObject,
+                                0,
+                                time)
+                            .SetOnComplete(() =>
+                            {
+                                Debug.Log("On Complete Completed");
+                            });
+                        });
                     });
-                });
-            });
 
         TweenEngine.MoveLocal(
             moveTestObjectLocal,
