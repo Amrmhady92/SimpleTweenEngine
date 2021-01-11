@@ -6,6 +6,7 @@ public class Test : MonoBehaviour
 {
     public SimpleTweenEngine.FloatField floatTest;
     public GameObject moveTestObject;
+    public GameObject moveTestObjectLocal;
     public GameObject scaleTestObject;
     public GameObject actionOvertimeObject;
     public float time = 3f;
@@ -14,17 +15,68 @@ public class Test : MonoBehaviour
     void Start()
     {
 
-        TweenEngine.Move(moveTestObject,
-            moveTestObject.transform.position/* + (Vector3.up * 4)*/,
-            time,
-            () => { Debug.Log("Move Object Started"); },
-            () => { Debug.Log("Move Object Complete"); }, // will be overriden down below by set on complete
-            () => { Debug.Log("Move Object Interrupted"); }
-            ).SetCurve(moveCurve,TweenAxis.Y, 5).SetOnComplete(()=>{ Debug.Log("On Complete Completed"); });
+        TweenEngine.Move(
+            moveTestObject,
+            moveTestObject.transform.position + (new Vector3(1, -1, 0)),
+            time)
+            .SetOnComplete(() =>
+            {
+                TweenEngine.MoveY(
+                    moveTestObject,
+                    0,
+                    time)
+                .SetOnComplete(() =>
+                {
+                    TweenEngine.MoveX(
+                        moveTestObject,
+                        0,
+                        time)
+                    .SetOnComplete(() =>
+                    {
+                        Debug.Log("On Complete Completed");
+                    });
+                });
+            });
 
-        TweenEngine.Scale(scaleTestObject,
-            moveTestObject.transform.localScale /*+ (Vector3.one * 2)*/,
-            time).SetCurve(scaleCurve,TweenAxis.All, 2);
+        TweenEngine.MoveLocal(
+            moveTestObjectLocal,
+            moveTestObjectLocal.transform.localPosition + (new Vector3(-2, 0, 0)),
+            time)
+            .SetOnComplete(() =>
+            {
+                TweenEngine.MoveLocalY(
+                    moveTestObjectLocal,
+                    -1,
+                    time)
+                .SetOnComplete(() =>
+                {
+                    TweenEngine.MoveLocalX(
+                        moveTestObjectLocal,
+                        1,
+                        time)
+                    .SetOnComplete(() =>
+                    {
+                        Debug.Log("On Complete Local Completed");
+                    });
+                });
+            });
+
+        TweenEngine.Scale(
+            moveTestObject,
+            moveTestObject.transform.localScale * 0.5f,
+            time).
+            SetOnComplete(() =>
+            {
+                TweenEngine.ScaleX(moveTestObject, 1, time)
+                .SetOnComplete(() =>
+                {
+                    TweenEngine.ScaleY(moveTestObject, 1, time)
+                    .SetOnComplete(() =>
+                    {
+                        TweenEngine.ScaleZ(moveTestObject, 1, time);
+                    });
+                });
+            });
 
         floatTest.Value = 0;
         TweenEngine.FloatValue(floatTest,

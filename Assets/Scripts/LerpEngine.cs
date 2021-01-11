@@ -66,26 +66,26 @@ namespace SimpleTweenEngine
         {
             if (job == null) return;
 
-            job.jobID = jobIndex;
-            jobIndex++;
+            //job.jobID = jobIndex;
+            //jobIndex++;
             JobsQueue.Add(job);
         }
         public void RemoveJob(TweenJob job)
         {
             if (job != null)
             {
-                RemoveJob(job.jobID);
+                RemoveJob(job.JobID);
             }
         }
         public void RemoveJob(int id)
         {
-            TweenJob job = JobsQueue.Find(x => x.jobID == id); // look for the job in the active queue
+            TweenJob job = JobsQueue.Find(x => x.JobID == id); // look for the job in the active queue
             if (job != null)
             {
                 JobsQueue.Remove(job);
             }
 
-            job = TempJobsQueue.Find(x => x.jobID == id); // look in the temp as well
+            job = TempJobsQueue.Find(x => x.JobID == id); // look in the temp as well
             if (job != null)
             {
                 TempJobsQueue.Remove(job);
@@ -93,20 +93,20 @@ namespace SimpleTweenEngine
         }
         public TweenJob GetJob(int id)
         {
-            TweenJob job = JobsQueue.Find(x => x.jobID == id); // look for the job in the active queue
+            TweenJob job = JobsQueue.Find(x => x.JobID == id); // look for the job in the active queue
             if (job != null)
             {
                 return job;
             }
-            job = TempJobsQueue.Find(x => x.jobID == id); // look in the temp as well
+            job = TempJobsQueue.Find(x => x.JobID == id); // look in the temp as well
             return job;
         }
         public bool EndJob(int id)
         {
             TweenJob job = GetJob(id);
             if (job == null) return false;
-            RemoveJob(job.jobID);
-            if (job.onInterrupt != null) job.onInterrupt.Invoke();
+            job.EndJob();
+            RemoveJob(job.JobID);
             return true;
         }
     }
