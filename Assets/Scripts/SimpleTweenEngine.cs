@@ -29,8 +29,15 @@ public static class TweenEngine
             return engine;
         }
     }
-    
-    
+
+    public static int JobIndex
+    {
+        get
+        {
+            return jobIndex;
+        }
+    }
+
     public static TweenJobTimer Timer(float time)
     {
         TweenJobTimer job = new TweenJobTimer(time, jobIndex++);
@@ -156,6 +163,8 @@ public static class TweenEngine
         Engine.RemoveJob(Engine.GetJob(id));
     }
 }
+
+
 namespace SimpleTweenEngine
 {
 

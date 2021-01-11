@@ -12,7 +12,6 @@ namespace SimpleTweenEngine
         List<TweenJob> tempJobsQueue;
 
         TweenJob currentJob;
-        int jobIndex = 0;
 
         public List<TweenJob> JobsQueue
         {
@@ -21,8 +20,6 @@ namespace SimpleTweenEngine
                 if (jobsQueue == null) jobsQueue = new List<TweenJob>();
                 return jobsQueue;
             }
-
-
         }
         public List<TweenJob> TempJobsQueue
         {
@@ -31,7 +28,6 @@ namespace SimpleTweenEngine
                 if (tempJobsQueue == null) tempJobsQueue = new List<TweenJob>();
                 return tempJobsQueue;
             }
-
         }
         public int ActiveJobsCount
         {
@@ -42,6 +38,8 @@ namespace SimpleTweenEngine
         }
         private void Update()
         {
+            if (JobsQueue.Count == 0 && TempJobsQueue.Count == 0) return;
+
             //Taking the jobs one by one as long as we have any jobs
             if (JobsQueue.Count == 0 && TempJobsQueue.Count > 0)
             {
@@ -66,8 +64,6 @@ namespace SimpleTweenEngine
         {
             if (job == null) return;
 
-            //job.jobID = jobIndex;
-            //jobIndex++;
             JobsQueue.Add(job);
         }
         public void RemoveJob(TweenJob job)

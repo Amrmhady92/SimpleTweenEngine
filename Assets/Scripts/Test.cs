@@ -78,6 +78,10 @@ public class Test : MonoBehaviour
                 });
             });
 
+
+        //scale full
+        TweenEngine.Scale(scaleTestObject, Vector3.one, time).SetCurve(scaleCurve, TweenAxis.All);
+
         floatTest.Value = 0;
         TweenEngine.FloatValue(floatTest,
             10,
@@ -85,16 +89,18 @@ public class Test : MonoBehaviour
 
 
         MeshRenderer actionRenderer = actionOvertimeObject.GetComponent<MeshRenderer>();
-        TweenEngine.CallBackOverTime(() => { actionRenderer.material.color = new Color(Random.Range(0,1f), Random.Range(0,1f), Random.Range(0, 1f)); },
+
+        TweenEngine.CallBackOverTime(() => { actionRenderer.material.color = new Color(Random.Range(0, 1f), Random.Range(0, 1f), Random.Range(0, 1f)); },
             time);
 
-
-       // Invoke("Ended", time);
+        Invoke("Ended", time * 4);
     }
 
-    //void Ended()
-    //{
-    //    Debug.Log("Ended");
-    //}
-    
+    public void Ended()
+    {
+        Debug.Log("Last Job ID = " + TweenEngine.JobIndex);
+
+    }
+
+
 }
